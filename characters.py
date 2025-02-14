@@ -3,21 +3,40 @@ import random
 
 
 class Character:
-    def __init__(self, name, maxhp, hp, attack, spattack, defense, spdefense, stamina, mana, sprite_path, x, y):
+    def __init__(self, name, max_hp, hp, attack, spattack, defense, spdefense, max_energy, energy, energy_regen, moves, sprite_path, x, y):
         self.name = name
-        self.maxhp = maxhp
+        self.maxhp = max_hp
         self.hp = hp
         self.attack = attack  # Physical damage
         self.spattack = spattack  # Spell damage
         self.defense = defense  # Physical defense
         self.spdefense = spdefense  # Spell defense
-        self.stamina = stamina  # Energy consumed by techniques
-        self.mana = mana  # Energy consumed by spells
+        self.max_energy = max_energy  # Maximum energy
+        self.energy = energy  # Current energy
+        self.energy_regen = energy_regen  # Energy regenerated every turn
 
         # Load the sprite image
         self.sprite = pygame.image.load(sprite_path).convert_alpha()  # Load with transparency
         self.x, self.y = x, y  # Selected position of character
         self.is_defending = False
+
+        # Moveset (list of dictionaries)
+        self.moves = moves
+
+    def use_move(self, move_index, enemy):
+        """Execute a move if enough energy is available."""
+        move = self.moves[move_index]
+        if self.energy >= move["energy_cost"]:
+            self.energy -= move["energy_cost"]  # Reduce energy
+            damage = max(5, self.attack + move["damage"] + random.randint(-3, 3))
+            enemy.take_damage(damage)
+            return move["name"], damage
+        else:
+            return "Not enough energy!", 0  # Not enough energy message
+
+    def regen_energy(self):
+        """Regenerate energy at the end of the turn."""
+        self.energy = min(self.max_energy, self.energy + self.energy_regen)  # Capped at max
 
     def take_damage(self, damage):
         if self.is_defending:
