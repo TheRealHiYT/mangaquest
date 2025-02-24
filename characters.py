@@ -39,11 +39,12 @@ class Character:
         self.energy = min(self.max_energy, self.energy + self.energy_regen)  # Capped at max
 
     def take_damage(self, damage):
+        """Reduce HP and check for defeat."""
         if self.is_defending:
             damage = int(damage * 0.5)  # Reduce damage by 50% when defending
-        self.hp -= max(0, damage - self.defense)  # Reduce HP but not below 0
-        if self.hp < 0:
-            self.hp = 0
+        self.hp -= damage
+        if self.hp <= 0:
+            self.hp = 0  # Ensure HP doesn't go negative
         self.is_defending = False  # Reset defense after turn
 
     def melee_target(self, enemy):

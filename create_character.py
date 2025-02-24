@@ -1,6 +1,7 @@
 import pygame
 import json
 import sys
+import subprocess
 
 pygame.init()
 
@@ -81,4 +82,5 @@ if __name__ == "__main__":
         print(f"Selected Fighter: {chosen_fighter['name']}")
         print("Starting game...")
         pygame.quit()
+        subprocess.run(["python", "main.py"])  # Start the game
         sys.exit()

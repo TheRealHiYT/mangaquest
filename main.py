@@ -2,6 +2,7 @@ import pygame
 from characters import Character
 import random
 import sys
+import json
 
 # Initialize Pygame and Default Variables
 pygame.init()
@@ -12,24 +13,33 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Fight Simulator")
 RED, GREEN, WHITE, BLACK = (255, 0, 0), (0, 255, 0), (255, 255, 255), (0, 0, 0)
 
-
-
-player_moves = [
-    {"name": "Punch", "damage": 10, "energy_cost": 5},
-    {"name": "Kick", "damage": 15, "energy_cost": 10},
-    {"name": "Fireball", "damage": 25, "energy_cost": 20},  # Strong but costly
-]
-
 enemy_moves = [
     {"name": "Scratch", "damage": 8, "energy_cost": 4},
     {"name": "Bite", "damage": 12, "energy_cost": 8},
     {"name": "Dark Slash", "damage": 20, "energy_cost": 15},
 ]
 
+selected_fighter_file = "selected_fighter.json"
+
+
+def load_selected_fighter():
+    try:
+        with open(selected_fighter_file, "r") as file:
+            return json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        print("No selected fighter found! Run fighter_menu.py first.")
+        return None
+
 
 # Load characters
-player = Character("Hero", 100, 100, 20, 5, 5, 10, 50, 50, 10, player_moves, "assets/sprites/hero_blank.png", -50, 300)
-enemy = Character("Enemy", 80, 80, 15, 10, 3, 5, 40, 40, 15, enemy_moves, "assets/sprites/enemy_blank.png", 450, 300)
+fighter_data = load_selected_fighter()
+if not fighter_data:
+    pygame.quit()
+    sys.exit()
+
+player = Character(fighter_data["name"], fighter_data["max_hp"], fighter_data["hp"], fighter_data["attack"], fighter_data["spattack"], fighter_data["defense"], fighter_data["spdefense"], fighter_data["max_energy"], fighter_data["energy"],
+                 fighter_data["energy_regen"], fighter_data["moves"], fighter_data["sprite"], -50, 300)
+enemy = Character("Enemy", 250, 250, 15, 10, 3, 5, 40, 40, 15, enemy_moves, "assets/sprites/enemy_blank.png", 450, 300)
 
 
 # Function for initializing health bars
@@ -189,4 +199,3 @@ while not game_over:
 if game_over:
     pygame.quit()
     sys.exit()
-
