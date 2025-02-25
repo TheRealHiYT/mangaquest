@@ -15,8 +15,8 @@ WHITE, BLACK, GREEN = (255, 255, 255), (0, 0, 0), (0, 255, 0)
 font = pygame.font.Font(None, 36)
 
 # Fighter list
-fighters_file = "fighters.json"
-selected_fighter_file = "selected_fighter.json"
+fighters_file = "characters.json"
+selected_fighter_file = "selected_character.json"
 
 
 # Load saved fighters
@@ -38,7 +38,7 @@ def save_selected_fighter(fighter):
 def fighter_menu():
     fighters = load_fighters()
     if not fighters:
-        print("No fighters available! Create one first.")
+        print("No fighters available! Create one inside a file called 'characters.json' first.")
         return None
 
     selected_index = 0

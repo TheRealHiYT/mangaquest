@@ -1,5 +1,5 @@
 import pygame
-from characters import Character
+from characters import Character, BossCharacter
 import random
 import sys
 import json
@@ -19,7 +19,7 @@ enemy_moves = [
     {"name": "Dark Slash", "damage": 20, "energy_cost": 15},
 ]
 
-selected_fighter_file = "selected_fighter.json"
+selected_fighter_file = "selected_character.json"
 
 
 def load_selected_fighter():
@@ -37,9 +37,10 @@ if not fighter_data:
     pygame.quit()
     sys.exit()
 
-player = Character(fighter_data["name"], fighter_data["max_hp"], fighter_data["hp"], fighter_data["attack"], fighter_data["spattack"], fighter_data["defense"], fighter_data["spdefense"], fighter_data["max_energy"], fighter_data["energy"],
-                 fighter_data["energy_regen"], fighter_data["moves"], fighter_data["sprite"], -50, 300)
-enemy = Character("Enemy", 250, 250, 15, 10, 3, 5, 40, 40, 15, enemy_moves, "assets/sprites/enemy_blank.png", 450, 300)
+player = Character(fighter_data["race"], fighter_data["name"], fighter_data["attack_type"], fighter_data["max_hp"], fighter_data["hp"], fighter_data["attack"],
+                   fighter_data["spattack"], fighter_data["defense"], fighter_data["spdefense"],
+                   fighter_data["max_energy"], fighter_data["energy"],
+                   fighter_data["energy_regen"], fighter_data["moves"], fighter_data["sprite"], -50, 300)
 
 
 # Function for initializing health bars
@@ -89,12 +90,52 @@ def draw_move_options():
         screen.blit(text, (50, 500 + i * 30))  # Position move choices
 
 
+def boss_choice():
+    try:
+        choice = int(input("Choose between a Boss Fight (0), a Slightly Harder Fight (1), or a Normal Fight (2)."))
+        return choice
+    except ValueError as e:
+        print(f"Exception occured: {e}. Did you type a number?")
+
+
+def battle_check(in_name, in_damage):
+    global message, game_over, turn, victory_text
+    if in_damage > 0:
+        message = f"Hero used {in_name}! Deals {in_damage} damage!"
+        player.regen_energy()
+
+        # Check if the enemy is defeated
+        if enemy.hp <= 0:
+            message = "Hero Wins!"
+            screen.fill(WHITE)  # Clear screen
+            victory_text = font.render("Hero Wins!", True, (0, 255, 0))
+            screen.blit(victory_text, (300, 250))  # Show victory message
+            pygame.display.flip()
+            pygame.time.delay(3000)  # Wait 3 seconds
+            game_over = True  # Exit the loop
+        else:
+            turn = "enemy"
+    else:
+        message = "Not enough energy!"
+
+
 # Game variables
 turn = "player"  # Who goes first
 game_over = False
 message = ""  # Display messages
 
+choice = boss_choice()
+
 while not game_over:
+    if choice == 0:
+        enemy = BossCharacter("Vampire", "Dio Brando", "Vamprism", 1200, 1200, 85, 70, 80, 35, 500, 500, 15, [{"name": "MUDA!", "damage": 20, "energy_cost": 10}, {"name": "MUDA Barrage", "damage": 50, "energy_cost": 35}, {"name": "Impale", "damage": 35, "energy_cost": 25}, {"name": "Timestop Impale", "damage": 100, "energy_cost": 75}], 3, 2, "assets/sprites/enemy_blank.png", 450, 300)
+    elif choice == 1:
+        enemy = Character("Human", "Enemy", "Physical", 250, 250, 15, 10, 3, 5, 40, 40, 15, enemy_moves, "assets/sprites/enemy_blank.png",
+                          450, 300)
+    else:
+        enemy = Character("Human", "Enemy", "Physical", 250, 250, 15, 10, 3, 5, 40, 40, 15, enemy_moves, "assets/sprites/enemy_blank.png",
+                          450, 300)
+
     screen.fill(WHITE)
 
     # Draw health bars
@@ -114,30 +155,33 @@ while not game_over:
             game_over = True
 
         if event.type == pygame.KEYDOWN and turn == "player":
+
             if event.key == pygame.K_1:  # First move
-                move_name, damage = player.use_move(0, enemy)
+                move_name, damage = player.use_move(0, enemy, enemy.race)
+
+                battle_check(move_name, damage)
             elif event.key == pygame.K_2:  # Second move
-                move_name, damage = player.use_move(1, enemy)
+                move_name, damage = player.use_move(1, enemy, enemy.race)
+
+                battle_check(move_name, damage)
             elif event.key == pygame.K_3:  # Third move
-                move_name, damage = player.use_move(2, enemy)
+                move_name, damage = player.use_move(2, enemy, enemy.race)
 
-            if damage > 0:
-                message = f"Hero used {move_name}! Deals {damage} damage!"
-                player.regen_energy()
-
-                # Check if the enemy is defeated
-                if enemy.hp <= 0:
-                    message = "Hero Wins!"
-                    screen.fill(WHITE)  # Clear screen
-                    victory_text = font.render("Hero Wins!", True, (0, 255, 0))
-                    screen.blit(victory_text, (300, 250))  # Show victory message
-                    pygame.display.flip()
-                    pygame.time.delay(3000)  # Wait 3 seconds
-                    game_over = True  # Exit the loop
+                battle_check(move_name, damage)
+            elif event.key == pygame.K_0:  # Default attack
+                if player.attack_type == "Hamon":
+                    move_name, damage = "Hamon Strike", enemy.attack_target(enemy, enemy.race)
+                elif player.attack_type == "Physical":
+                    move_name, damage = "Simple Jab", enemy.attack_target(enemy, enemy.race)
                 else:
-                    turn = "enemy"
-            else:
-                message = "Not enough energy!"
+                    move_name, damage = "Vampiric Slash", enemy.attack_target(enemy, enemy.race)
+
+                battle_check(move_name, damage)
+
+            elif event.key == pygame.K_d:
+                print("Defending!")
+                player.is_defending = True
+                message = "Hero is defending!"
 
     # Enemy turn (Basic AI)
     if turn == "enemy" and enemy.is_alive():
@@ -145,12 +189,12 @@ while not game_over:
         affordable_moves = [i for i in range(len(enemy.moves)) if enemy.energy >= enemy.moves[i]["energy_cost"]]
         action = random.choice(["attack", "defend", "move"])  # Random action
         if action == "attack":
-            damage = enemy.melee_target(player)
+            damage = enemy.attack_target(player, player.race)
             message = f"Villain attacks! Deals {damage} damage!"
         elif action == "move":
             if affordable_moves:  # If the enemy has a move it can use
                 move_index = random.choice(affordable_moves)  # Pick a random affordable move
-                move_name, damage = enemy.use_move(move_index, player)
+                move_name, damage = enemy.use_move(move_index, player, player.race)
                 message = f"Villain used {move_name}! Deals {damage} damage!"
         if player.hp <= 0:
             message = "Villain Wins!"
@@ -194,7 +238,6 @@ while not game_over:
 
     pygame.display.flip()  # Update screen
     clock.tick(30)  # Limit FPS
-
 
 if game_over:
     pygame.quit()
