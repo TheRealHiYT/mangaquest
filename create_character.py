@@ -15,7 +15,7 @@ WHITE, BLACK, GREEN = (255, 255, 255), (0, 0, 0), (0, 255, 0)
 font = pygame.font.Font(None, 36)
 
 # Fighter list
-fighters_file = "characters.json"
+fighters_file = "fighters.json"
 selected_fighter_file = "selected_character.json"
 
 
@@ -38,7 +38,7 @@ def save_selected_fighter(fighter):
 def fighter_menu():
     fighters = load_fighters()
     if not fighters:
-        print("No fighters available! Create one inside a file called 'characters.json' first.")
+        print("No fighters available! Create one inside a file called 'fighters.json' first.")
         return None
 
     selected_index = 0
@@ -80,7 +80,4 @@ if __name__ == "__main__":
     chosen_fighter = fighter_menu()
     if chosen_fighter:
         print(f"Selected Fighter: {chosen_fighter['name']}")
-        print("Starting game...")
-        pygame.quit()
-        subprocess.run(["python", "main.py"])  # Start the game
-        sys.exit()
+        print("Run \"main.py\" to begin the fight!")

@@ -27,19 +27,18 @@ class Character:
 
     def use_move(self, move_index, enemy, race):
         """Execute a move if enough energy is available."""
-        weakness = False
         move = self.moves[move_index]
         if self.energy >= move["energy_cost"]:
             self.energy -= move["energy_cost"]  # Reduce energy
             if self.attack_type == "Hamon" and race == "Vampire":
-                weakness = True
-                damage = max(5, self.attack + move["damage"] + random.randint(-3, 3)) * 3
+                damage = int(max(5, self.attack + move["damage"] + random.randint(-3, 3)) * 3)
             elif self.attack_type == "Vampirism" and race == "Human":
-                weakness = True
-                damage = (5, self.attack + move["damage"] + random.randint(-3, 3))
+                damage = int(max(5, self.attack + move["damage"] + random.randint(-3, 3)) * 1.5)
+            elif self.race == "Cambion":
+                damage = int(max((5, self.attack + move["damage"] + random.randint(-3, 3)) * 2) + 5)
             else:
-                damage = max(5, self.attack + move["damage"] + random.randint(-3, 3))
-            enemy.take_damage(damage, weakness)
+                damage = int(max(5, self.attack + move["damage"] + random.randint(-3, 3)))
+            enemy.take_damage(damage)
             return move["name"], damage
         else:
             return "Not enough energy!", 0  # Not enough energy warning
@@ -48,32 +47,24 @@ class Character:
         """Regenerate energy at the end of the turn."""
         self.energy = min(self.max_energy, self.energy + self.energy_regen)  # Capped at max
 
-    def take_damage(self, damage, weakness=False):
+    def take_damage(self, damage):
         """Reduce HP and check for defeat."""
-        if self.is_defending and weakness is not True:
-            damage = int(damage * 0.5)  # Reduce damage by 50% when defending
-        elif self.is_defending and weakness is True:
-            damage = int(damage)
-        self.hp -= damage
-        if self.hp <= 0:
-            self.hp = 0  # Ensure HP doesn't go negative
+        damage = int(damage)  # Ensure it's an integer
+        self.hp = max(0, self.hp - damage)  # Prevent negative HP
+        print(f"{self.name} takes {damage} damage! HP left: {self.hp}")
         self.is_defending = False  # Reset defense after turn
 
     def attack_target(self, enemy, race):
-        weakness = False
-
         if self.attack_type == "Hamon" and race == "Vampire":
-            weakness = True
             damage = max(5, self.attack + random.randint(-3, 3)) * 2.5
 
         elif self.attack_type == "Vampirism" and race == "Human":
-            weakness = True
             damage = max(5, self.attack + random.randint(-3, 3)) * 1.5
 
         else:
             damage = max(5, self.attack + random.randint(-3, 3))
 
-        enemy.take_damage(damage, weakness)
+        enemy.take_damage(damage)
         return damage  # Return damage dealt
 
     def is_alive(self):

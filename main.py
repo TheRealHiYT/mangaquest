@@ -8,7 +8,7 @@ import json
 pygame.init()
 clock = pygame.time.Clock()
 font = pygame.font.Font(pygame.font.get_default_font(), 24)  # Uses a default system font
-WIDTH, HEIGHT = 1000, 600
+WIDTH, HEIGHT = 1000, 800
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Fight Simulator")
 RED, GREEN, WHITE, BLACK = (255, 0, 0), (0, 255, 0), (255, 255, 255), (0, 0, 0)
@@ -84,6 +84,7 @@ def draw_move_options():
         font.render(f"1: {player.moves[0]['name']}", True, BLACK),
         font.render(f"2: {player.moves[1]['name']}", True, BLACK),
         font.render(f"3: {player.moves[2]['name']}", True, BLACK),
+        font.render(f"4: {player.moves[3]['name']}", True, BLACK),
     ]
 
     for i, text in enumerate(move_texts):
@@ -92,10 +93,10 @@ def draw_move_options():
 
 def boss_choice():
     try:
-        choice = int(input("Choose between a Boss Fight (0), a Slightly Harder Fight (1), or a Normal Fight (2)."))
+        choice = int(input("Choose between a Boss Fight (0), a Slightly Harder Fight (1), or a Normal Fight (2).\n"))
         return choice
     except ValueError as e:
-        print(f"Exception occured: {e}. Did you type a number?")
+        print(f"Exception occured: {e}. Did you type a number?\n")
 
 
 def battle_check(in_name, in_damage):
@@ -125,17 +126,22 @@ game_over = False
 message = ""  # Display messages
 
 choice = boss_choice()
+if choice == 0:
+    enemy = BossCharacter("Vampire", "Dio Brando", "Vamprism", 2200, 2200, 85, 70, 80, 35, 500, 500, 15,
+                          [{"name": "MUDA!", "damage": 20, "energy_cost": 10},
+                           {"name": "MUDA Barrage", "damage": 50, "energy_cost": 35},
+                           {"name": "Impale", "damage": 35, "energy_cost": 25},
+                           {"name": "Timestop Impale", "damage": 100, "energy_cost": 75}], 3, 2,
+                          "assets/sprites/enemy_blank.png", 450, 300)
+elif choice == 1:
+    enemy = Character("Human", "Enemy", "Physical", 250, 250, 15, 10, 3, 5, 40, 40, 15, enemy_moves,
+                      "assets/sprites/enemy_blank.png",
+                      450, 300)
+else:
+    enemy = Character("Human", "Enemy", "Physical", 250, 250, 15, 10, 3, 5, 40, 40, 15, enemy_moves,
+                      "assets/sprites/enemy_blank.png", 450, 300)
 
 while not game_over:
-    if choice == 0:
-        enemy = BossCharacter("Vampire", "Dio Brando", "Vamprism", 1200, 1200, 85, 70, 80, 35, 500, 500, 15, [{"name": "MUDA!", "damage": 20, "energy_cost": 10}, {"name": "MUDA Barrage", "damage": 50, "energy_cost": 35}, {"name": "Impale", "damage": 35, "energy_cost": 25}, {"name": "Timestop Impale", "damage": 100, "energy_cost": 75}], 3, 2, "assets/sprites/enemy_blank.png", 450, 300)
-    elif choice == 1:
-        enemy = Character("Human", "Enemy", "Physical", 250, 250, 15, 10, 3, 5, 40, 40, 15, enemy_moves, "assets/sprites/enemy_blank.png",
-                          450, 300)
-    else:
-        enemy = Character("Human", "Enemy", "Physical", 250, 250, 15, 10, 3, 5, 40, 40, 15, enemy_moves, "assets/sprites/enemy_blank.png",
-                          450, 300)
-
     screen.fill(WHITE)
 
     # Draw health bars
@@ -167,14 +173,17 @@ while not game_over:
             elif event.key == pygame.K_3:  # Third move
                 move_name, damage = player.use_move(2, enemy, enemy.race)
 
+            elif event.key == pygame.K_4:  # Fourth move
+                move_name, damage = player.use_move(3, enemy, enemy.race)
+
                 battle_check(move_name, damage)
             elif event.key == pygame.K_0:  # Default attack
                 if player.attack_type == "Hamon":
-                    move_name, damage = "Hamon Strike", enemy.attack_target(enemy, enemy.race)
+                    move_name, damage = "Hamon Strike", player.attack_target(enemy, enemy.race)
                 elif player.attack_type == "Physical":
-                    move_name, damage = "Simple Jab", enemy.attack_target(enemy, enemy.race)
+                    move_name, damage = "Simple Jab", player.attack_target(enemy, enemy.race)
                 else:
-                    move_name, damage = "Vampiric Slash", enemy.attack_target(enemy, enemy.race)
+                    move_name, damage = "Vampiric Slash", player.attack_target(enemy, enemy.race)
 
                 battle_check(move_name, damage)
 
@@ -187,7 +196,12 @@ while not game_over:
     if turn == "enemy" and enemy.is_alive():
         pygame.time.delay(1000)  # Pause before AI moves
         affordable_moves = [i for i in range(len(enemy.moves)) if enemy.energy >= enemy.moves[i]["energy_cost"]]
-        action = random.choice(["attack", "defend", "move"])  # Random action
+        if enemy.hp > player.hp * 1.5:
+            action = random.choice(["attack", "move"])
+        elif enemy.hp * 2 < player.hp:
+            action = "move"
+        else:
+            action = random.choice(["attack", "defend", "move"])  # Random action
         if action == "attack":
             damage = enemy.attack_target(player, player.race)
             message = f"Villain attacks! Deals {damage} damage!"
@@ -219,6 +233,7 @@ while not game_over:
         draw_health_bar(player, 50, 50)
         draw_health_bar(enemy, 550, 50)
 
+        pygame.display.flip()
         pygame.time.delay(4000)
         game_over = True
     elif not enemy.is_alive():
