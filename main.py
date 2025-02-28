@@ -1,5 +1,5 @@
 import pygame
-from characters import Character, BossCharacter
+from assets.structure.characters import Character, BossCharacter
 import random
 import sys
 import json
@@ -178,9 +178,9 @@ while not game_over:
 
                 battle_check(move_name, damage)
             elif event.key == pygame.K_0:  # Default attack
-                if player.attack_type == "Hamon":
+                if player.combat_style == "Hamon":
                     move_name, damage = "Hamon Strike", player.attack_target(enemy, enemy.race)
-                elif player.attack_type == "Physical":
+                elif player.combat_style == "Physical":
                     move_name, damage = "Simple Jab", player.attack_target(enemy, enemy.race)
                 else:
                     move_name, damage = "Vampiric Slash", player.attack_target(enemy, enemy.race)
