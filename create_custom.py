@@ -1,20 +1,26 @@
 from tkinter import Tk, Label, Button, Entry, IntVar, StringVar, filedialog
 from tkinter.ttk import Combobox
+import json
 
-def write_spells_to_file(filename: str):
+
+def write_moves_to_file(filename: str):
     """ Asks user to input the number of spells, input the words of the spell, and then write to file.
     :param filename:
     :return:
     """
     # user inputs each spell, then they are appended to a list
-    spells = list()
-    for x in range(4):
-        spell = input("Whisper the name of a spell: ")
-        spells.append(spell)
+    moves = list()
+    for x in range(1):
+        move_name = input("Whisper the name of a technique: ")
+        move_damage = int(input("Whisper the damage of the technique: "))
+        move_cost = int(input("Whiser the cost of the technique: "))
+        move_type = input("Whisper the damage type of the technique (MAG, PHY, HAM, RAD): ")
+
+        moves.append({"name": move_name, "damage": move_damage, "energy_cost": move_cost, "type": move_type})
     # write spells to the file
     with open(filename, 'a') as file:
-        for spell in spells:
-            file.write(spell + '\n')
+        for move in moves:
+            json.dump(move, fp=file, indent=4)
 
 
 def read_spells_from_file(filename: str):
@@ -40,12 +46,6 @@ def read_spells_from_file(filename: str):
         # Flavoring spell names as incantations in order to fit the setting
         print(f"Characters in your longest incantation (spell name): {len(max(spells))}")
         print(f"Your incantations (spell names) have an average length of {sum(int_spells)/len(spells)}")
-
-
-def main():
-    filename = "spellbook.txt"
-    write_spells_to_file(filename)
-    read_spells_from_file(filename)
 
 
 # ---Window Setup---
@@ -90,3 +90,63 @@ hp_label.grid(row=3, column=0, padx=5, pady=5)
 
 hp_entry = Entry(window, textvariable=hp_var)
 hp_entry.grid(row=3, column=1, padx=5, pady=5)
+
+attack_var = IntVar(value=20)
+attack_label = Label(window, text="Character's Attack:")
+attack_label.grid(row=4, column=0, padx=5, pady=5)
+
+
+attack_entry = Entry(window, textvariable=attack_var)
+attack_entry.grid(row=4, column=1, padx=5, pady=5)
+
+
+spattack_var = IntVar(value=20)
+spattack_label = Label(window, text="Character's Special Attack:")
+spattack_label.grid(row=5, column=0, padx=5, pady=5)
+
+
+spattack_entry = Entry(window, textvariable=spattack_var)
+spattack_entry.grid(row=5, column=1, padx=5, pady=5)
+
+
+defense_var = IntVar(value=25)
+defense_label = Label(window, text="Character's Defense:")
+defense_label.grid(row=6, column=0, padx=5, pady=5)
+
+
+defense_entry = Entry(window, textvariable=defense_var)
+defense_entry.grid(row=6, column=1, padx=5, pady=5)
+
+
+spdefense_var = IntVar(value=25)
+spdefense_label = Label(window, text="Character's Special Defense:")
+spdefense_label.grid(row=6, column=0, padx=5, pady=5)
+
+
+spdefense_entry = Entry(window, textvariable=spdefense_var)
+spdefense_entry.grid(row=6, column=1, padx=5, pady=5)
+
+
+energy_var = IntVar(value=50)
+energy_label = Label(window, text="Character's Energy:")
+energy_label.grid(row=7, column=0, padx=5, pady=5)
+
+
+energy_entry = Entry(window, textvariable=energy_var)
+energy_entry.grid(row=7, column=1, padx=5, pady=5)
+
+
+regen_var = IntVar(value=5)
+regen_label = Label(window, text="Character's Energy Regen:")
+regen_label.grid(row=8, column=0, padx=5, pady=5)
+
+
+regen_entry = Entry(window, textvariable=regen_var)
+regen_entry.grid(row=8, column=1, padx=5, pady=5)
+
+
+moves_label = Label(window, text="Character's Techniques:")
+moves_label.grid(row=9, column=0, padx=5, pady=5)
+
+
+moves_button = Button(window, command=write_moves_to_file)
