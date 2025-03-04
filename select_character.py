@@ -1,7 +1,6 @@
 import pygame
 import json
 import sys
-import subprocess
 
 pygame.init()
 
