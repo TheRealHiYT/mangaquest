@@ -1,145 +1,137 @@
-from tkinter import Tk, Label, Entry, IntVar, StringVar
-from tkinter.ttk import Combobox, Button
-from assets.structure.characters import Character
-import pygame
-
-pygame.init()
-WIDTH, HEIGHT = 1000, 800
-pygame.display.set_mode((WIDTH, HEIGHT))
-character = Character
-moves = list()
+import tkinter as tk
+from tkinter import filedialog, messagebox, simpledialog
+import json
+import os
 
 
-def finalize_character():
-    """ When user has entered all states, they press the 'create_character' button, which writes the character to fighters.json
-    :return: A new character in '*/assets/structure/fighters.json'
-    """
+class CharacterCreator:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Custom Character Creator")
 
-    try:
-        finished_character = character(race=race_var.get(), name=char_var.get(), combat_style=style_var.get(),
-                                       max_hp=hp_var.get(), hp=hp_var.get(),
-                                       attack=attack_var.get(), spattack=spattack_var.get(), defense=defense_var.get(),
-                                       spdefense=spdefense_var.get(),
-                                       max_energy=energy_var.get(), energy=energy_var.get(),
-                                       energy_regen=regen_var.get(), moves=moves, x=-50, y=300,
-                                       sprite_path=sprite_var.get())
+        self.character_data = {
+            "race": "",
+            "name": "",
+            "combat_style": "",
+            "max_hp": 100,
+            "hp": 100,
+            "attack": 10,
+            "spattack": 10,
+            "defense": 5,
+            "spdefense": 5,
+            "max_energy": 50,
+            "energy": 50,
+            "energy_regen": 5,
+            "moves": [],
+            "sprite_path": "",
+            "x": 100,
+            "y": 100
+        }
 
-        with open('assets/structure/fighters.txt', mode='a') as file:
-            file.write(f'"{char_var.get()}": \u007b \n{finished_character.race}, \n{finished_character.name}, \n'
-                       f'{finished_character.combat_style}, \n{finished_character.maxhp}, \n{finished_character.hp}, '
-                       f'\n{finished_character.attack}, \n{finished_character.spattack}, \n{finished_character.defense}, \n'
-                       f'{finished_character.spdefense}, \n{finished_character.max_energy}, \n{finished_character.energy}, \n'
-                       f'{finished_character.energy_regen}, \n{finished_character.moves}, \n-50, \n300, \n{finished_character.sprite}')
-    except Exception as e:
-        print(f"An error occurred: {e}")
+        self.create_widgets()
+
+    def create_widgets(self):
+        """Create input fields for character attributes"""
+
+        # Name, Race, Combat Style
+        tk.Label(self.root, text="Name:").grid(row=0, column=0)
+        self.name_entry = tk.Entry(self.root)
+        self.name_entry.grid(row=0, column=1)
+
+        tk.Label(self.root, text="Race:").grid(row=1, column=0)
+        self.race_entry = tk.Entry(self.root)
+        self.race_entry.grid(row=1, column=1)
+
+        tk.Label(self.root, text="Combat Style:").grid(row=2, column=0)
+        self.combat_style_entry = tk.Entry(self.root)
+        self.combat_style_entry.grid(row=2, column=1)
+
+        # Stats
+        self.create_stat_input("Max HP:", "max_hp", 3)
+        self.create_stat_input("Attack:", "attack", 4)
+        self.create_stat_input("Sp. Attack:", "spattack", 5)
+        self.create_stat_input("Defense:", "defense", 6)
+        self.create_stat_input("Sp. Defense:", "spdefense", 7)
+        self.create_stat_input("Max Energy:", "max_energy", 8)
+        self.create_stat_input("Energy Regen:", "energy_regen", 9)
+
+        # Moves Section
+        tk.Label(self.root, text="Moves:").grid(row=10, column=0, columnspan=2)
+        self.moves_listbox = tk.Listbox(self.root, height=4, width=40)
+        self.moves_listbox.grid(row=11, column=0, columnspan=2)
+
+        tk.Button(self.root, text="Add Move", command=self.add_move).grid(row=12, column=0)
+        tk.Button(self.root, text="Remove Move", command=self.remove_move).grid(row=12, column=1)
+
+        # Sprite Selection
+        tk.Button(self.root, text="Select Sprite", command=self.select_sprite).grid(row=13, column=0, columnspan=2)
+        self.sprite_label = tk.Label(self.root, text="No sprite selected")
+        self.sprite_label.grid(row=14, column=0, columnspan=2)
+
+        # Save Button
+        tk.Button(self.root, text="Save Character", command=self.save_character).grid(row=15, column=0, columnspan=2)
+
+    def create_stat_input(self, label, key, row):
+        """Helper function to create stat input fields"""
+        tk.Label(self.root, text=label).grid(row=row, column=0)
+        entry = tk.Entry(self.root)
+        entry.grid(row=row, column=1)
+        setattr(self, f"{key}_entry", entry)
+
+    def add_move(self):
+        """Add a move to the character's moveset"""
+        move_name = tk.simpledialog.askstring("Move Name", "Enter move name:")
+        if move_name:
+            move_damage = tk.simpledialog.askinteger("Move Damage", "Enter move damage:")
+            move_cost = tk.simpledialog.askinteger("Energy Cost", "Enter move energy cost:")
+            move_type = tk.simpledialog.askstring("Move Type", "Enter move damage type:")
+            if move_damage is not None and move_cost is not None:
+                move = {"name": move_name, "damage": move_damage, "energy_cost": move_cost, "type": move_type}
+                self.character_data["moves"].append(move)
+                self.moves_listbox.insert(tk.END, f"{move_name} (Dmg: {move_damage}, Cost: {move_cost}, Type: {move_type})")
+
+    def remove_move(self):
+        """Remove selected move from list"""
+        selected = self.moves_listbox.curselection()
+        if selected:
+            index = selected[0]
+            del self.character_data["moves"][index]
+            self.moves_listbox.delete(index)
+
+    def select_sprite(self):
+        """Select a sprite image file"""
+        file_path = filedialog.askopenfilename(filetypes=[("Image Files", "*.png;*.jpg;*.jpeg")])
+        if file_path:
+            self.character_data["sprite_path"] = file_path
+            self.sprite_label.config(text=os.path.basename(file_path))
+
+    def save_character(self):
+        """Save character data to JSON file"""
+        self.character_data["name"] = self.name_entry.get()
+        self.character_data["race"] = self.race_entry.get()
+        self.character_data["combat_style"] = self.combat_style_entry.get()
+
+        # Update numeric stats
+        for key in ["max_hp", "attack", "spattack", "defense", "spdefense", "max_energy", "energy_regen"]:
+            try:
+                self.character_data[key] = int(getattr(self, f"{key}_entry").get())
+                if self.character_data[key] == "max_energy":
+                    self.character_data["energy"] = int(getattr(self, f"{key}_entry").get())
+                elif self.character_data[key] == "max_hp":
+                    self.character_data["hp"] = int(getattr(self, f"{key}_entry").get())
+            except ValueError:
+                messagebox.showerror("Input Error", f"Invalid value for {key}. Please enter a number.")
+                return
+
+        # Save to JSON file
+        file_name = f"{self.character_data['name']}.json"
+        with open(file_name, "w") as f:
+            json.dump(self.character_data, f, indent=4)
+
+        messagebox.showinfo("Success", f"Character saved as {file_name}")
 
 
-def write_moves():
-    """ Asks user to input the number of spells, input the words of the spell, and then write to file.
-    :return:
-    """
-    global character
-    global moves
-    # user inputs each spell, then they are appended to a list
-    for x in range(4):
-        move_name = input("Whisper the name of a technique: ")
-        move_damage = int(input("Whisper the damage of the technique: "))
-        move_cost = int(input("Whiser the cost of the technique: "))
-        move_type = input("Whisper the damage type of the technique (MAG, PHY, HAM, RAD): ")
-
-        moves.append({"name": move_name, "damage": move_damage, "energy_cost": move_cost, "type": move_type})
-
-
-# ---Window Setup---
-window = Tk()
-window.minsize(500, 900)
-
-# ---Data Field Setup---
-char_label = Label(window, text="Character's Name:")
-char_label.grid(row=0, column=0, padx=5, pady=5)
-
-char_var = StringVar(value="Anonymous Fighter")
-char_entry = Entry(window, textvariable=char_var)
-char_entry.grid(row=0, column=1, padx=5, pady=5)
-
-race_label = Label(window, text="Character's Species:")
-race_label.grid(row=1, column=0, padx=5, pady=5)
-
-race_list = ["Human", "Vampire", "Cambion"]
-race_var = StringVar(value="Human")
-
-race_dropdown = Combobox(window, values=race_list, textvariable=race_var, state="readonly")
-race_dropdown.grid(row=1, column=1, padx=5, pady=5)
-
-style_label = Label(window, text="Character's Combat Style:")
-style_label.grid(row=2, column=0, padx=5, pady=5)
-
-style_list = ["PHY", "MAG", "HAM", "RAD"]
-style_var = StringVar(value="PHY")
-
-style_dropdown = Combobox(window, values=style_list, textvariable=style_var)
-style_dropdown.grid(row=2, column=1, padx=5, pady=5)
-
-hp_var = IntVar(value=100)
-hp_label = Label(window, text="Character's HP:")
-hp_label.grid(row=3, column=0, padx=5, pady=5)
-
-hp_entry = Entry(window, textvariable=hp_var)
-hp_entry.grid(row=3, column=1, padx=5, pady=5)
-
-attack_var = IntVar(value=20)
-attack_label = Label(window, text="Character's Attack:")
-attack_label.grid(row=4, column=0, padx=5, pady=5)
-
-attack_entry = Entry(window, textvariable=attack_var)
-attack_entry.grid(row=4, column=1, padx=5, pady=5)
-
-spattack_var = IntVar(value=20)
-spattack_label = Label(window, text="Character's Special Attack:")
-spattack_label.grid(row=5, column=0, padx=5, pady=5)
-
-spattack_entry = Entry(window, textvariable=spattack_var)
-spattack_entry.grid(row=5, column=1, padx=5, pady=5)
-
-defense_var = IntVar(value=25)
-defense_label = Label(window, text="Character's Defense:")
-defense_label.grid(row=6, column=0, padx=5, pady=5)
-
-defense_entry = Entry(window, textvariable=defense_var)
-defense_entry.grid(row=6, column=1, padx=5, pady=5)
-
-spdefense_var = IntVar(value=25)
-spdefense_label = Label(window, text="Character's Special Defense:")
-spdefense_label.grid(row=7, column=0, padx=5, pady=5)
-
-spdefense_entry = Entry(window, textvariable=spdefense_var)
-spdefense_entry.grid(row=7, column=1, padx=5, pady=5)
-
-energy_var = IntVar(value=50)
-energy_label = Label(window, text="Character's Energy:")
-energy_label.grid(row=8, column=0, padx=5, pady=5)
-
-energy_entry = Entry(window, textvariable=energy_var)
-energy_entry.grid(row=8, column=1, padx=5, pady=5)
-
-regen_var = IntVar(value=5)
-regen_label = Label(window, text="Character's Energy Regen:")
-regen_label.grid(row=9, column=0, padx=5, pady=5)
-
-regen_entry = Entry(window, textvariable=regen_var)
-regen_entry.grid(row=9, column=1, padx=5, pady=5)
-
-moves_button = Button(window, text="Create Techniques", command=write_moves)
-moves_button.grid(row=10, column=0, columnspan=2, padx=5, pady=5)
-
-sprite_var = StringVar(value="C:/")
-sprite_label = Label(window, text="Sprite File Path:")
-sprite_label.grid(row=11, column=0, padx=5, pady=5)
-
-sprite_entry = Entry(window, textvariable=sprite_var)
-sprite_entry.grid(row=11, column=1, padx=5, pady=5)
-
-create_character = Button(window, text="Create Character", command=finalize_character)
-create_character.grid(row=12, column=0, columnspan=2, padx=5, pady=5)
-
-window.mainloop()
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = CharacterCreator(root)
+    root.mainloop()

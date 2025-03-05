@@ -1,8 +1,12 @@
 import pygame
-from assets.structure.characters import Character, BossCharacter
+from characters import Character, BossCharacter
 import random
 import sys
 import json
+
+import tkinter as tk
+from tkinter import filedialog
+
 
 # Initialize Pygame and Default Variables
 pygame.init()
@@ -19,28 +23,64 @@ enemy_moves = [
     {"name": "Dark Slash", "damage": 20, "energy_cost": 15},
 ]
 
-selected_fighter_file = "selected_character.json"
+
+def get_json_filepath():
+    """Opens a file dialog to let the user choose a JSON character file."""
+    root = tk.Tk()
+    root.withdraw()  # Hide the root window
+    file_path = filedialog.askopenfilename(
+        title="Select Character JSON File",
+        filetypes=[("JSON files", "*.json"), ("All files", "*.*")]
+    )
+    return file_path  # Returns the selected JSON file path
 
 
-def load_selected_fighter():
+def load_character(json_path):
+    """Loads a character from a user-selected JSON file."""
     try:
-        with open(selected_fighter_file, "r") as file:
-            return json.load(file)
-    except (FileNotFoundError, json.JSONDecodeError):
-        print("No selected fighter found! Run fighter_menu.py first.")
+        with open(json_path, "r") as f:
+            data = json.load(f)
+
+        # Ensure a sprite path exists, otherwise set a default
+        sprite_path = data.get("sprite_path", "sprites/default.png")
+
+        return Character(
+            race=data["race"],
+            name=data["name"],
+            combat_style=data["combat_style"],
+            max_hp=data["max_hp"],
+            hp=data["hp"],
+            attack=data["attack"],
+            spattack=data["spattack"],
+            defense=data["defense"],
+            spdefense=data["spdefense"],
+            max_energy=data["max_energy"],
+            energy=data["energy"],
+            energy_regen=data["energy_regen"],
+            moves=data["moves"],
+            sprite_path=sprite_path,  # Use default if missing
+            x=data["x"],
+            y=data["y"]
+        )
+    except Exception as e:
+        print(f"Error loading character: {e}")
         return None
 
 
 # Load characters
-fighter_data = load_selected_fighter()
+fighter_data = get_json_filepath()  # Ask user to select JSON file
+if fighter_data:
+    player = load_character(fighter_data)
+    if player:
+        print(f"Loaded character: {player.name}")
+    else:
+        print("Failed to load character.")
+else:
+    print("No file selected.")
+
 if not fighter_data:
     pygame.quit()
     sys.exit()
-
-player = Character(fighter_data["race"], fighter_data["name"], fighter_data["attack_type"], fighter_data["max_hp"], fighter_data["hp"], fighter_data["attack"],
-                   fighter_data["spattack"], fighter_data["defense"], fighter_data["spdefense"],
-                   fighter_data["max_energy"], fighter_data["energy"],
-                   fighter_data["energy_regen"], fighter_data["moves"], fighter_data["sprite"], -50, 300)
 
 
 # Function for initializing health bars
