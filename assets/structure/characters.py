@@ -1,6 +1,5 @@
 import pygame
 import random
-import os
 
 
 class Character:
@@ -10,28 +9,21 @@ class Character:
         self.combat_style = combat_style
         self.maxhp = max_hp
         self.hp = hp
-        self.attack = attack
-        self.spattack = spattack
-        self.defense = defense
-        self.spdefense = spdefense
-        self.max_energy = max_energy
-        self.energy = energy
-        self.energy_regen = energy_regen
-        self.x, self.y = x, y
+        self.attack = attack  # Physical damage
+        self.spattack = spattack  # Spell damage
+        self.defense = defense  # Physical defense
+        self.spdefense = spdefense  # Spell defense
+        self.max_energy = max_energy  # Maximum energy
+        self.energy = energy  # Current energy
+        self.energy_regen = energy_regen  # Energy regenerated every turn
 
-        # Moveset
-        self.moves = moves
+        # Load the sprite image
+        self.sprite = pygame.image.load(sprite_path).convert_alpha()  # Load with transparency
+        self.x, self.y = x, y  # Selected position of character
         self.is_defending = False
 
-        # Default sprite path
-        default_sprite_path = "assets/sprites/hero_blank.png"
-
-        # Use provided sprite path or fall back to default
-        if sprite_path and os.path.exists(sprite_path):
-            self.sprite = pygame.image.load(sprite_path).convert_alpha()
-        else:
-            print(f"Warning: Sprite '{sprite_path}' not found! Using default sprite.")
-            self.sprite = pygame.image.load(default_sprite_path).convert_alpha()
+        # Moveset (list of dictionaries)
+        self.moves = moves
 
     def use_move(self, move_index, enemy, race):
         """Execute a move if enough energy is available."""
@@ -66,37 +58,34 @@ class Character:
 
             elif atk_type == "HAM":  # Check for Hamon weakness
                 damage = int(damage * 1.5)
-                print(f"{self.name} was hurt more than normal due to the {atk_type} attack! {damage} damage taken! HP left: {self.hp}")
+                print(f"{self.name} was slightly weak to the {atk_type} attack! {damage} damage taken! HP left: {self.hp}")
 
             elif atk_type == "RAD":  # Check for Radiant weakness
                 damage = int(damage * 2.5)  # If the weakness applies, increase damage by 250%
                 print(f"{self.name} was weak to the {atk_type} attack! {damage} damage taken! HP left: {self.hp}")
 
             else:  # If no weaknesses or resistances are identified, resort to default damage.
-                print(f"{self.name} takes {damage} damage! HP left: {self.hp}")
+                damage = damage
+                print(f"{self.name} takes an unmodified {damage} damage! HP left: {self.hp}")
 
         elif self.race == "Vampire":  # Check race to identify weaknesses and resistances
             if atk_type == "HAM":  # Check for Hamon weakness
                 damage = int(damage * 3)
-                print(f"{self.name} was weak to the {atk_type} attack! {damage} damage taken! HP left: {self.hp}")
 
             elif atk_type == "RAD":  # Check for Radiant weakness
                 damage = int(damage * 6)
-                print(f"{self.name} was extremely weak to the {atk_type} attack! {damage} damage taken! HP left: {self.hp}")
 
         elif self.race == "Human" and atk_type == "VMP":
             damage = max(5, self.attack + random.randint(-3, 3)) * 1.5
-            print(f"{self.name} was hurt more than normal due to the {atk_type} attack! {damage} damage taken! HP left: {self.hp}")
 
         else:
             damage = max(5, self.attack + random.randint(-3, 3))
-            print(f"{self.name} takes {damage} damage! HP left: {self.hp}")
 
         self.hp = max(0, self.hp - damage)  # Prevent negative HP
         self.is_defending = False  # Reset defense after turn
 
     def attack_target(self, enemy, race):
-        damage = int(max(5, self.attack + random.randint(-10, 10)))
+        damage = int(max(5, self.attack + random.randint(-3, 3)))
 
         enemy.take_damage(damage, self.combat_style)
         return damage  # Return damage dealt

@@ -1,0 +1,43 @@
+{
+    "race": "Human",
+    "name": "Allegore Allstar",
+    "combat_style": "Hamon",
+    "max_hp": 1450,
+    "hp": 1450,
+    "attack": 300,
+    "spattack": 450,
+    "defense": 500,
+    "spdefense": 350,
+    "max_energy": 500,
+    "energy": 500,
+    "energy_regen": 50,
+    "moves": [
+        {
+            "name": "Zoom Punch",
+            "damage": 45,
+            "energy_cost": 20,
+            "type": "HAM"
+        },
+        {
+            "name": "Scarlet Overdrive",
+            "damage": 70,
+            "energy_cost": 40,
+            "type": "HAM"
+        },
+        {
+            "name": "Metal Silver Overdrive",
+            "damage": 90,
+            "energy_cost": 65,
+            "type": "HAM"
+        },
+        {
+            "name": "Sunlight Yellow Overdrive",
+            "damage": 140,
+            "energy_cost": 100,
+            "type": "RAD"
+        }
+    ],
+    "sprite_path": "",
+    "x": 100,
+    "y": 100
+}

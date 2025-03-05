@@ -1,0 +1,84 @@
+{
+  "Alice Allstar": {
+    "race": "Human",
+    "name": "Alice Allstar",
+    "attack_type": "Hamon",
+    "max_hp": 450,
+    "hp": 450,
+    "attack": 70,
+    "spattack": 125,
+    "defense": 55,
+    "spdefense": 45,
+    "max_energy": 60,
+    "energy": 60,
+    "energy_regen": 10,
+    "moves": [
+        {
+            "name": "Scarf Trip",
+            "damage": 15,
+            "energy_cost": 5,
+            "type": "PHY"
+        },
+        {
+            "name": "Scarf Blade",
+            "damage": 25,
+            "energy_cost": 15,
+            "type": "PHY"
+        },
+        {
+            "name": "Hamon Wrap",
+            "damage": 35,
+            "energy_cost": 25,
+            "type": "PHY"
+        },
+        {
+            "name": "Sunray",
+            "damage": 70,
+            "energy_cost": 60,
+            "type": "MAG"
+        }
+    ],
+    "sprite": "assets/sprites/hero_blank.png"
+  },
+  "Dante Sparda": {
+    "race": "Cambion",
+    "name": "Dante Sparda",
+    "attack_type": "Physical",
+    "max_hp": 2250,
+    "hp": 2250,
+    "attack": 185,
+    "spattack": 180,
+    "defense": 195,
+    "spdefense": 190,
+    "max_energy": 375,
+    "energy": 375,
+    "energy_regen": 15,
+    "moves": [
+        {
+            "name": "High Time",
+            "damage": 40,
+            "energy_cost": 20,
+            "type": "PHY"
+        },
+        {
+            "name": "Stinger",
+            "damage": 50,
+            "energy_cost": 35,
+            "type": "PHY"
+        },
+        {
+            "name": "Helm Breaker",
+            "damage": 75,
+            "energy_cost": 45,
+            "type": "PHY"
+        },
+        {
+            "name": "Million Stab",
+            "damage": 90,
+            "energy_cost": 55,
+            "type": "PHY"
+        }
+    ],
+    "sprite": "assets/sprites/hero_blank.png"
+  }
+}
