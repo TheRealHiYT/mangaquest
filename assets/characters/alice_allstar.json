@@ -1,41 +1,43 @@
 {
-  "race": "Human",
-  "name": "Alice Allstar",
-  "combat_style": "Hamon",
-  "max_hp": 750,
-  "hp": 750,
-  "attack": 70,
-  "spattack": 125,
-  "defense": 55,
-  "spdefense": 45,
-  "max_energy": 60,
-  "energy": 60,
-  "energy_regen": 10,
-  "moves": [
-    {
-      "name": "Scarf Trip",
-      "damage": 15,
-      "energy_cost": 5,
-      "type": "PHY"
-    },
-    {
-      "name": "Scarf Blade",
-      "damage": 25,
-      "energy_cost": 15,
-      "type": "PHY"
-    },
-    {
-      "name": "Hamon Wrap",
-      "damage": 35,
-      "energy_cost": 25,
-      "type": "PHY"
-    },
-    {
-      "name": "Sunray",
-      "damage": 70,
-      "energy_cost": 60,
-      "type": "MAG"
-    }
-  ],
-  "sprite": "assets/sprites/hero_blank.png"
+    "race": "Human",
+    "name": "Alice Allstar",
+    "combat_style": "Hamon",
+    "max_hp": 750,
+    "hp": 750,
+    "attack": 70,
+    "spattack": 125,
+    "defense": 55,
+    "spdefense": 45,
+    "max_energy": 60,
+    "energy": 60,
+    "energy_regen": 10,
+    "moves": [
+        {
+            "name": "Scarf Trip",
+            "damage": 15,
+            "energy_cost": 5,
+            "type": "HAM"
+        },
+        {
+            "name": "Scarf Blade",
+            "damage": 25,
+            "energy_cost": 15,
+            "type": "HAM"
+        },
+        {
+            "name": "Hamon Wrap",
+            "damage": 35,
+            "energy_cost": 25,
+            "type": "HAM"
+        },
+        {
+            "name": "Sunray",
+            "damage": 70,
+            "energy_cost": 60,
+            "type": "RAD"
+        }
+    ],
+    "sprite_path": "",
+    "x": 100,
+    "y": 100
 }
