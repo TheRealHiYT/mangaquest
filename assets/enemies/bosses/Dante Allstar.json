@@ -1,16 +1,16 @@
 {
     "race": "Hamon User",
-    "name": "Allegore Allstar",
+    "name": "Dante Allstar",
     "combat_style": "Hamon",
-    "max_hp": 1450,
-    "hp": 1450,
-    "attack": 300,
-    "spattack": 450,
-    "defense": 500,
-    "spdefense": 350,
-    "max_energy": 500,
-    "energy": 500,
-    "energy_regen": 50,
+    "max_hp": 1577,
+    "hp": 1577,
+    "attack": 135,
+    "spattack": 183,
+    "defense": 195,
+    "spdefense": 168,
+    "max_energy": 426,
+    "energy": 426,
+    "regen": 75,
     "moves": [
         {
             "name": "Zoom Punch",
@@ -37,7 +37,17 @@
             "type": "RAD"
         }
     ],
-    "sprite_path": "",
-    "x": 100,
+    "leg_resistances": 3,
+    "leg_actions": 2,
+    "leg_moves": [
+        {
+            "name": "!Ultimate Skill! Crimson Bubble Overdrive!!",
+            "damage": 999,
+            "energy_cost": 200,
+            "type": "RAD"
+        }
+    ],
+    "sprite": "assets/sprites/enemy_blank.png",
+    "x": 450,
     "y": 300
 }

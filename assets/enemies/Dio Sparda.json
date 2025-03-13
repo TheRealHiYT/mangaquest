@@ -1,0 +1,61 @@
+{
+    "race": "Vampire",
+    "name": "Dio Sparda",
+    "combat_style": "Vampirism",
+    "max_hp": 2887,
+    "hp": 2887,
+    "attack": 157,
+    "spattack": 202,
+    "defense": 227,
+    "spdefense": 241,
+    "max_energy": 121,
+    "energy": 121,
+    "regen": 35,
+    "moves": [
+        {
+            "name": "MUDA!",
+            "damage": 20,
+            "energy_cost": 10,
+            "type": "MAG"
+        },
+        {
+            "name": "MUDA Barrage",
+            "damage": 50,
+            "energy_cost": 35,
+            "type": "MAG"
+        },
+        {
+            "name": "Impale",
+            "damage": 35,
+            "energy_cost": 25,
+            "type": "MAG"
+        },
+        {
+            "name": "Timestop Impale",
+            "damage": 100,
+            "energy_cost": 75,
+            "type": "PHY"
+        }
+    ],
+    "leg_resistances": 4,
+    "leg_actions": 2,
+    "leg_moves": [
+        {
+            "name": "!Ultimate Skill! Checkmate!",
+            "damage": 360,
+            "energy_cost": 50,
+            "leg_cost": 1,
+            "type": "PHY"
+        },
+        {
+            "name": "!Ultimate Skill! ROAD ROLLER!!",
+            "damage": 520,
+            "energy_cost": 75,
+            "leg_cost": 2,
+            "type": "PHY"
+        }
+    ],
+    "sprite": "assets/sprites/enemy_blank.png",
+    "x": 450,
+    "y": 300
+}

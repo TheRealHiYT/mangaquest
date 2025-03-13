@@ -1,5 +1,5 @@
 {
-    "race": "Hybrid",
+    "race": "Cambion",
     "name": "Dante Sparda",
     "attack_type": "Physical",
     "max_hp": 2250,
@@ -10,27 +10,31 @@
     "spdefense": 190,
     "max_energy": 375,
     "energy": 375,
-    "energy_regen": 20,
+    "energy_regen": 15,
     "moves": [
         {
             "name": "High Time",
             "damage": 40,
-            "energy_cost": 10
+            "energy_cost": 20,
+            "type": "PHY"
         },
         {
             "name": "Stinger",
             "damage": 50,
-            "energy_cost": 15
+            "energy_cost": 35,
+            "type": "PHY"
         },
         {
             "name": "Helm Breaker",
             "damage": 75,
-            "energy_cost": 25
+            "energy_cost": 45,
+            "type": "PHY"
         },
         {
             "name": "Million Stab",
             "damage": 90,
-            "energy_cost": 35
+            "energy_cost": 55,
+            "type": "PHY"
         }
     ],
     "sprite": "assets/sprites/hero_blank.png"

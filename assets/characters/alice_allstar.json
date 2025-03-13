@@ -1,5 +1,5 @@
 {
-  "race": "Human",
+  "race": "Hamon User",
   "name": "Alice Allstar",
   "combat_style": "Hamon",
   "max_hp": 750,
@@ -37,5 +37,7 @@
       "type": "MAG"
     }
   ],
-  "sprite": "assets/sprites/hero_blank.png"
+  "sprite": "assets/sprites/hero_blank.png",
+  "x": 100,
+  "y": 300
 }

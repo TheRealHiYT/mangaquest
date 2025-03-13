@@ -1,0 +1,71 @@
+{
+    "race": "Vampire",
+    "name": "Vergil Allstar",
+    "combat_style": "Vampirism",
+    "max_hp": 1327,
+    "hp": 1327,
+    "attack": 232,
+    "spattack": 214,
+    "defense": 141,
+    "spdefense": 162,
+    "max_energy": 213,
+    "energy": 213,
+    "regen": 51,
+    "moves": [
+        {
+            "name": "MUDA!",
+            "damage": 20,
+            "energy_cost": 10,
+            "type": "MAG"
+        },
+        {
+            "name": "MUDA Barrage",
+            "damage": 50,
+            "energy_cost": 35,
+            "type": "MAG"
+        },
+        {
+            "name": "Impale",
+            "damage": 35,
+            "energy_cost": 25,
+            "type": "MAG"
+        },
+        {
+            "name": "Timestop Impale",
+            "damage": 100,
+            "energy_cost": 75,
+            "type": "PHY"
+        }
+    ],
+    "leg_resistances": 1,
+    "leg_actions": 3,
+    "leg_moves": [
+        {
+            "name": "MUDA!",
+            "damage": 20,
+            "energy_cost": 10,
+            "type": "MAG"
+        },
+        {
+            "name": "MUDA Barrage",
+            "damage": 50,
+            "energy_cost": 35,
+            "type": "MAG"
+        },
+        {
+            "name": "Impale",
+            "damage": 35,
+            "energy_cost": 25,
+            "type": "MAG"
+        },
+        {
+            "name": "Timestop Impale",
+            "damage": 100,
+            "energy_cost": 75,
+            "type": "PHY"
+        }
+    ],
+    "sprite": "assets/sprites/enemy_blank.png",
+    "x": 450,
+    "y": 300
+}

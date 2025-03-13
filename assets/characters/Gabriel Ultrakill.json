@@ -1,0 +1,43 @@
+{
+    "race": "Angel",
+    "name": "Gabriel Ultrakill",
+    "combat_style": "Hamon",
+    "max_hp": 6500,
+    "hp": 100,
+    "attack": 250,
+    "spattack": 265,
+    "defense": 340,
+    "spdefense": 350,
+    "max_energy": 600,
+    "energy": 50,
+    "energy_regen": 40,
+    "moves": [
+        {
+            "name": "There can be only LIGHT!",
+            "damage": 225,
+            "energy_cost": 50,
+            "type": "RAD"
+        },
+        {
+            "name": "Not. Even. Mortal.",
+            "damage": 275,
+            "energy_cost": 60,
+            "type": "RAD"
+        },
+        {
+            "name": "Foolishness, Mortal. Foolisness.",
+            "damage": 320,
+            "energy_cost": 70,
+            "type": "RAD"
+        },
+        {
+            "name": "BEHOLD! THE POWER OF AN ANGEL!",
+            "damage": 500,
+            "energy_cost": 120,
+            "type": "RAD"
+        }
+    ],
+    "sprite_path": "",
+    "x": 100,
+    "y": 100
+}
