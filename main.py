@@ -1,12 +1,11 @@
 import pygame
-from characters import Character, BossCharacter
+from characters import Character, EnemyGen, BossGen
 import random
 import sys
 import json
 
 import tkinter as tk
 from tkinter import filedialog
-
 
 # Initialize Pygame and Default Variables
 pygame.init()
@@ -17,11 +16,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Fight Simulator")
 RED, GREEN, WHITE, BLACK = (255, 0, 0), (0, 255, 0), (255, 255, 255), (0, 0, 0)
 
-enemy_moves = [
-    {"name": "Scratch", "damage": 8, "energy_cost": 4},
-    {"name": "Bite", "damage": 12, "energy_cost": 8},
-    {"name": "Dark Slash", "damage": 20, "energy_cost": 15},
-]
+enemy_types = ["Hamon User", "Vampire"]  # To implement later: random.choice(["Human", "Hamon User", "Vampire", "Cambion"])
 
 
 def get_json_filepath():
@@ -43,6 +38,10 @@ def load_character(json_path):
 
         # Ensure a sprite path exists, otherwise set a default
         sprite_path = data.get("sprite_path", "sprites/default.png")
+        if not data["x"]:
+            data["x"] = 100
+        if not data["y"]:
+            data["y"] = 100
 
         return Character(
             race=data["race"],
@@ -67,6 +66,30 @@ def load_character(json_path):
         return None
 
 
+def generate_enemy(multi=1):
+    # Choose an enemy type and run the corresponding function
+    Selection = EnemyGen(enemy_types)
+    enemy_data, enemy_json = Selection.gen_enemy(multi)
+    # Save the enemy to JSON
+    filename = f"assets/enemies/{enemy_data.name}.json"
+    with open(filename, "w") as f:
+        json.dump(enemy_json, f, indent=4)
+    print("Enemy saved to", filename)
+    return enemy_data
+
+
+def generate_boss(multi=1):
+    # Choose an enemy type and run the corresponding function
+    Selection = BossGen(enemy_types)
+    enemy_data, enemy_json = Selection.gen_boss(multi)
+    # Save the enemy to JSON
+    filename = f"assets/enemies/bosses/{enemy_data.name}.json"
+    with open(filename, "w") as f:
+        json.dump(enemy_json, f, indent=4)
+    print("Enemy saved to", filename)
+    return enemy_data
+
+
 # Load characters
 fighter_data = get_json_filepath()  # Ask user to select JSON file
 if fighter_data:
@@ -76,7 +99,13 @@ if fighter_data:
     else:
         print("Failed to load character.")
 else:
-    print("No file selected.")
+    print("No file selected, attempting to use 'selected_character.json'...")
+    player = load_character('selected_character.json')
+    if player:
+        print(f"Loaded character: {player.name}")
+    else:
+        print("Failed to load character. Please run 'create_custom.py' to make a character, or run 'select_character.py' to use a saved one!")
+
 
 if not fighter_data:
     pygame.quit()
@@ -133,8 +162,8 @@ def draw_move_options():
 
 def boss_choice():
     try:
-        choice = int(input("Choose between a Boss Fight (0), a Slightly Harder Fight (1), or a Normal Fight (2).\n"))
-        return choice
+        diff_choice = int(input("Choose between a Boss Fight (0), a Slightly Harder Fight (1), or a Normal Fight (2).\n"))
+        return diff_choice
     except ValueError as e:
         print(f"Exception occured: {e}. Did you type a number?\n")
 
@@ -167,19 +196,14 @@ message = ""  # Display messages
 
 choice = boss_choice()
 if choice == 0:
-    enemy = BossCharacter("Vampire", "Dio Brando", "Vamprism", 2200, 2200, 85, 70, 80, 35, 500, 500, 15,
-                          [{"name": "MUDA!", "damage": 20, "energy_cost": 10},
-                           {"name": "MUDA Barrage", "damage": 50, "energy_cost": 35},
-                           {"name": "Impale", "damage": 35, "energy_cost": 25},
-                           {"name": "Timestop Impale", "damage": 100, "energy_cost": 75}], 3, 2,
-                          "assets/sprites/enemy_blank.png", 450, 300)
+    enemy = generate_boss()
+
+
 elif choice == 1:
-    enemy = Character("Human", "Enemy", "Physical", 250, 250, 15, 10, 3, 5, 40, 40, 15, enemy_moves,
-                      "assets/sprites/enemy_blank.png",
-                      450, 300)
+    enemy = generate_enemy(multi=2)
+
 else:
-    enemy = Character("Human", "Enemy", "Physical", 250, 250, 15, 10, 3, 5, 40, 40, 15, enemy_moves,
-                      "assets/sprites/enemy_blank.png", 450, 300)
+    enemy = generate_enemy()
 
 while not game_over:
     screen.fill(WHITE)

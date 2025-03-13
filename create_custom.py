@@ -1,12 +1,14 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox, simpledialog
+from tkinter.ttk import Combobox
 import json
 import os
 
 
+# noinspection PyTypeChecker
 class CharacterCreator:
-    def __init__(self, root):
-        self.root = root
+    def __init__(self, window):
+        self.root = window
         self.root.title("Custom Character Creator")
 
         self.character_data = {
@@ -39,11 +41,13 @@ class CharacterCreator:
         self.name_entry.grid(row=0, column=1)
 
         tk.Label(self.root, text="Race:").grid(row=1, column=0)
-        self.race_entry = tk.Entry(self.root)
+        self.race_var = tk.Variable
+        self.race_entry = Combobox(self.root, textvariable=self.race_var, values=["Human", "Hamon User", "Vampire", "Cambion", "Angel"])
         self.race_entry.grid(row=1, column=1)
 
         tk.Label(self.root, text="Combat Style:").grid(row=2, column=0)
-        self.combat_style_entry = tk.Entry(self.root)
+        self.combat_style_var = tk.Variable
+        self.combat_style_entry = Combobox(self.root, textvariable=self.combat_style_var, values=["Physical", "Hamon", "Vampirism", "Spiritual"])
         self.combat_style_entry.grid(row=2, column=1)
 
         # Stats
@@ -84,7 +88,7 @@ class CharacterCreator:
         if move_name:
             move_damage = tk.simpledialog.askinteger("Move Damage", "Enter move damage:")
             move_cost = tk.simpledialog.askinteger("Energy Cost", "Enter move energy cost:")
-            move_type = tk.simpledialog.askstring("Move Type", "Enter move damage type:")
+            move_type = tk.simpledialog.askstring("Move Type", "Enter move damage type (""):")
             if move_damage is not None and move_cost is not None:
                 move = {"name": move_name, "damage": move_damage, "energy_cost": move_cost, "type": move_type}
                 self.character_data["moves"].append(move)
@@ -124,7 +128,7 @@ class CharacterCreator:
                 return
 
         # Save to JSON file
-        file_name = f"{self.character_data['name']}.json"
+        file_name = f"assets/characters/{self.character_data['name']}.json"
         with open(file_name, "w") as f:
             json.dump(self.character_data, f, indent=4)
 

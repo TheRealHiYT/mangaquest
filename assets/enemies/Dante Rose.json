@@ -1,0 +1,61 @@
+{
+    "race": "Vampire",
+    "name": "Dante Rose",
+    "combat_style": "Vampirism",
+    "max_hp": 2641,
+    "hp": 2641,
+    "attack": 284,
+    "spattack": 298,
+    "defense": 227,
+    "spdefense": 159,
+    "max_energy": 139,
+    "energy": 139,
+    "regen": 69,
+    "moves": [
+        {
+            "name": "MUDA!",
+            "damage": 70,
+            "energy_cost": 10,
+            "type": "MAG"
+        },
+        {
+            "name": "MUDA Barrage",
+            "damage": 150,
+            "energy_cost": 35,
+            "type": "MAG"
+        },
+        {
+            "name": "Impale",
+            "damage": 125,
+            "energy_cost": 25,
+            "type": "MAG"
+        },
+        {
+            "name": "Timestop Impale",
+            "damage": 280,
+            "energy_cost": 75,
+            "type": "PHY"
+        }
+    ],
+    "leg_resistances": 1,
+    "leg_actions": 2,
+    "leg_moves": [
+        {
+            "name": "!Ultimate Skill! Checkmate!",
+            "damage": 360,
+            "energy_cost": 50,
+            "leg_cost": 1,
+            "type": "PHY"
+        },
+        {
+            "name": "!Ultimate Skill! ROAD ROLLER!!",
+            "damage": 520,
+            "energy_cost": 75,
+            "leg_cost": 2,
+            "type": "PHY"
+        }
+    ],
+    "sprite": "assets/sprites/enemy_blank.png",
+    "x": 450,
+    "y": 300
+}

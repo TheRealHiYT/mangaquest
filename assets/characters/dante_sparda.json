@@ -1,7 +1,7 @@
 {
   "race": "Cambion",
   "name": "Dante Sparda",
-  "combat_style": "Physical",
+  "combat_style": "Devil Arms",
   "max_hp": 2250,
   "hp": 2250,
   "attack": 185,
@@ -10,32 +10,34 @@
   "spdefense": 190,
   "max_energy": 375,
   "energy": 375,
-  "energy_regen": 15,
+  "energy_regen": 45,
   "moves": [
     {
       "name": "High Time",
-      "damage": 40,
-      "energy_cost": 20,
+      "damage": 90,
+      "energy_cost": 60,
       "type": "PHY"
     },
     {
       "name": "Stinger",
-      "damage": 50,
-      "energy_cost": 35,
+      "damage": 130,
+      "energy_cost": 95,
       "type": "PHY"
     },
     {
       "name": "Helm Breaker",
-      "damage": 75,
-      "energy_cost": 45,
+      "damage": 175,
+      "energy_cost": 125,
       "type": "PHY"
     },
     {
       "name": "Million Stab",
-      "damage": 90,
-      "energy_cost": 55,
+      "damage": 220,
+      "energy_cost": 165,
       "type": "PHY"
     }
   ],
-  "sprite": "assets/sprites/hero_blank.png"
+  "sprite": "assets/sprites/hero_blank.png",
+  "x": 100,
+  "y": 300
 }

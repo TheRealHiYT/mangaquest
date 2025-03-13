@@ -1,0 +1,39 @@
+{
+    "race": "Vampire",
+    "name": "Vanilla Brando",
+    "combat_style": "Vampirism",
+    "hp": 596,
+    "attack": 75,
+    "spattack": 109,
+    "defense": 59,
+    "spdefense": 25,
+    "energy": 74,
+    "regen": 5,
+    "moves": [
+        {
+            "name": "Superhuman Barrage",
+            "damage": 15,
+            "energy_cost": 6,
+            "type": "VMP"
+        },
+        {
+            "name": "Bloodsuck",
+            "damage": 20,
+            "energy_cost": 16,
+            "type": "VMP"
+        },
+        {
+            "name": "Vaporization Freeze",
+            "damage": 30,
+            "energy_cost": 19,
+            "type": "VAM"
+        },
+        {
+            "name": "Space Ripper Stingy Eyes",
+            "damage": 45,
+            "energy_cost": 33,
+            "type": "PHY"
+        }
+    ],
+    "sprite": null
+}
